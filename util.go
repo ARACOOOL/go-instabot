@@ -25,6 +25,9 @@ var unfollow *bool
 // Acut
 var run *bool
 
+// Full path to a config file
+var configFile *string
+
 // An image will be liked if the poster has more followers than likeLowerLimit, and less than likeUpperLimit
 var likeLowerLimit int
 var likeUpperLimit int
@@ -78,6 +81,7 @@ func parseOptions() {
 	nomail = flag.Bool("nomail", false, "Use this option to disable the email notifications")
 	dev = flag.Bool("dev", false, "Use this option to use the script in development mode : nothing will be done for real")
 	logs := flag.Bool("logs", false, "Use this option to enable the logfile")
+	configFile = flag.String("cnf", "", "Path to a config file")
 
 	flag.Parse()
 
@@ -97,11 +101,18 @@ func parseOptions() {
 
 // Gets the conf in the config file
 func getConfig() {
-	folder := "config"
-	if *dev {
-		folder = "local"
+	configFilePath := *configFile
+
+	if *configFile == "" {
+		folder := "config"
+		if *dev {
+			folder = "local"
+		}
+
+		configFilePath = folder + "/config.json"
 	}
-	viper.SetConfigFile(folder + "/config.json")
+
+	viper.SetConfigFile(configFilePath)
 
 	// Reads the config file
 	if err := viper.ReadInConfig(); err != nil {
