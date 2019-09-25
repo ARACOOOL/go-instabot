@@ -48,7 +48,7 @@ Go to the project folder :
 
 There, in the 'dist/' folder, you will find a sample 'config.json', that you have to copy to the 'config/' folder :
 
-```go
+```json
 {
     "user" : {
         "instagram" : {
