@@ -95,14 +95,16 @@ func getKeyFile(username string) string {
 
 // Logins and saves the session
 func createAndSaveSession() {
-	insta = goinsta.New(viper.GetString("user.instagram.username"), viper.GetString("user.instagram.password"))
+	username := viper.GetString("user.instagram.username")
+
+	insta = goinsta.New(username, viper.GetString("user.instagram.password"))
 	err := insta.Login()
 	check(err)
 
 	key := createKey()
 	bytes, err := store.Export(insta, key)
 	check(err)
-	err = ioutil.WriteFile(getSessionFile(viper.GetString("user.instagram.username")), bytes, 0644)
+	err = ioutil.WriteFile(getSessionFile(username), bytes, 0644)
 	check(err)
 	log.Println("Created and saved the session")
 }
