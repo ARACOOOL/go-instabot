@@ -129,6 +129,8 @@ Since you used the `go get` command, you now have the `go-instabot` executable a
 
 **-logs** : Use this option to enable the logfile. The script will continue writing everything on the screen, but it will also write it in a .log file.
 
+**-cnf** : Path to a config file. App uses the default config path if this option is not passed
+
 **-nomail** : Use this option to disable the email notifications.
 
 **-sync** : Use this option to unfollow users that don't follow you back. Don't worry, the script will ask before actually doing it, so you can use it just to check the number!
@@ -141,7 +143,3 @@ Since you used the `go get` command, you now have the `go-instabot` executable a
   Also, try to use hashtags related to your own account : if you are a portrait photographer and you suddenly start following a thousand #cats related accounts, I doubt it will bring you back a thousand new followers...
   
 Good luck getting new followers!
-
-### ⚠️ Reporting issues/PRs/license
-This is _very_ loosely maintained, as in, I'll _probably_ try and fix things if everything is broken, but I'm no longer working on it. Feel free to fork it though!
-
