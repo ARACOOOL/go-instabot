@@ -76,6 +76,7 @@ func contains(slice []response.User, user response.User) bool {
 }
 
 var sessionFileName string
+
 func getSessionFile(username string) string {
 	if sessionFileName == "" {
 		sessionFileName = "sessions/" + genSessionKey([]byte(username))
@@ -85,6 +86,7 @@ func getSessionFile(username string) string {
 }
 
 var keyFileName string
+
 func getKeyFile(username string) string {
 	if keyFileName == "" {
 		keyFileName = "keys/" + genSessionKey([]byte(username))
