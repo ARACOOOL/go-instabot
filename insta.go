@@ -52,7 +52,7 @@ func syncFollowers() {
 		if !*dev {
 			insta.UnFollow(user.ID)
 		}
-		time.Sleep(6 * time.Second)
+		time.Sleep(7 * time.Second)
 	}
 }
 
@@ -269,7 +269,7 @@ func goThrough(images response.TagFeedsResponse) {
 		log.Printf("%s done\n\n", poster.Username)
 
 		// This is to avoid the temporary ban by Instagram
-		time.Sleep(20 * time.Second)
+		time.Sleep(25 * time.Second)
 	}
 }
 
