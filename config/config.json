@@ -1,1 +1,42 @@
-Copy the config from ../dist/config.json, and put your own parameters
+{
+  "user" : {
+    "instagram" : {
+      "username" : "phpdevel",
+      "password" : "q1w2e3r4t5"
+    },
+    "mail" : {
+      "from" : "foo@bar.foo",
+      "password" : "foOb@r",
+      "to" : "bar@foo.bar",
+      "smtp" : "smtp.gmail.com:587",
+      "server" : "smtp.gmail.com"
+    }
+  },
+  "limits" : {
+    "maxRetry" : 2,
+    "like" : {
+      "min" : 0,
+      "max" : 10000
+    },
+    "comment" : {
+      "min" : 100,
+      "max" : 10000
+    },
+    "follow" : {
+      "min" : 200,
+      "max" : 10000
+    }
+  },
+  "tags" : {
+    "programming" : {
+      "like" : 5,
+      "comment" : 0,
+      "follow" : 0
+    }
+  },
+  "comments" : [
+    "awesome",
+    "wow",
+    "nice pic"
+  ]
+}

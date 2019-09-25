@@ -2,6 +2,7 @@ package main
 
 import (
 	"bufio"
+	"crypto/md5"
 	"errors"
 	"fmt"
 	"io/ioutil"
@@ -74,6 +75,24 @@ func contains(slice []response.User, user response.User) bool {
 	return false
 }
 
+var sessionFileName string
+func getSessionFile(username string) string {
+	if sessionFileName == "" {
+		sessionFileName = "sessions/" + genSessionKey([]byte(username))
+	}
+
+	return sessionFileName
+}
+
+var keyFileName string
+func getKeyFile(username string) string {
+	if keyFileName == "" {
+		keyFileName = "keys/" + genSessionKey([]byte(username))
+	}
+
+	return keyFileName
+}
+
 // Logins and saves the session
 func createAndSaveSession() {
 	insta = goinsta.New(viper.GetString("user.instagram.username"), viper.GetString("user.instagram.password"))
@@ -83,27 +102,35 @@ func createAndSaveSession() {
 	key := createKey()
 	bytes, err := store.Export(insta, key)
 	check(err)
-	err = ioutil.WriteFile("session", bytes, 0644)
+	err = ioutil.WriteFile(getSessionFile(viper.GetString("user.instagram.username")), bytes, 0644)
 	check(err)
 	log.Println("Created and saved the session")
 }
 
+// Generate the session key
+func genSessionKey(data []byte) string {
+	return fmt.Sprintf("%x", md5.Sum(data))
+}
+
 // reloadSession will attempt to recover a previous session
 func reloadSession() error {
-	if _, err := os.Stat("session"); os.IsNotExist(err) {
-		return errors.New("No session found")
+	username := viper.GetString("user.instagram.username")
+	sessionFile := getSessionFile(username)
+
+	if _, err := os.Stat(sessionFile); os.IsNotExist(err) {
+		return errors.New("no session found")
 	}
 
-	session, err := ioutil.ReadFile("session")
+	session, err := ioutil.ReadFile(sessionFile)
 	check(err)
 	log.Println("A session file exists")
 
-	key, err := ioutil.ReadFile("key")
+	key, err := ioutil.ReadFile(getKeyFile(username))
 	check(err)
 
 	insta, err = store.Import(session, key)
 	if err != nil {
-		return errors.New("Couldn't recover the session")
+		return errors.New("couldn't recover the session")
 	}
 
 	log.Println("Successfully logged in")
@@ -116,7 +143,7 @@ func createKey() []byte {
 	key := make([]byte, 32)
 	_, err := rand.Read(key)
 	check(err)
-	err = ioutil.WriteFile("key", key, 0644)
+	err = ioutil.WriteFile(getKeyFile(viper.GetString("user.instagram.username")), key, 0644)
 	check(err)
 	log.Println("Created and saved the key")
 	return key
@@ -153,7 +180,7 @@ func browse() {
 		// Instagram will return a 500 sometimes, so we will retry 10 times.
 		// Check retry() for more info.
 		var images response.TagFeedsResponse
-		err := retry(10, 20*time.Second, func() (err error) {
+		err := retry(10, 30*time.Second, func() (err error) {
 			images, err = insta.TagFeed(tag)
 			return
 		})
@@ -191,7 +218,7 @@ func goThrough(images response.TagFeedsResponse) {
 		// Instagram will return a 500 sometimes, so we will retry 10 times.
 		// Check retry() for more info.
 		var posterInfo response.GetUsernameResponse
-		err := retry(10, 20*time.Second, func() (err error) {
+		err := retry(10, 30*time.Second, func() (err error) {
 			posterInfo, err = insta.GetUserByUsername(image.User.Username)
 			return
 		})
